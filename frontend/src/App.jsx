@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const App = () => {
   const [clients, setClients] = useState([]);
   const [form, setForm] = useState({
@@ -19,12 +21,13 @@ const App = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
   const [showStats, setShowStats] = useState(true);
+  
 
   // Fetch clients from backend
   const fetchClients = async () => {
     setIsLoading(true);
     try {
-      const res = await axios.get('http://localhost:5000/api/clients');
+      const res = await axios.get(`${API_BASE_URL}/api/clients`);
       setClients(res.data);
     } catch (err) {
       console.error('Failed to fetch clients:', err);
@@ -48,11 +51,11 @@ const App = () => {
     try {
       if (isEditing) {
         // Update client in backend
-        const res = await axios.put(`http://localhost:5000/api/clients/${form._id}`, form);
+        const res = await axios.put(`${API_BASE_URL}/api/clients/${form._id}`, form);
         setClients(clients.map(c => c._id === form._id ? res.data : c));
       } else {
         // Create client in backend
-        const res = await axios.post('http://localhost:5000/api/clients', form);
+        const res = await axios.post(`${API_BASE_URL}/api/clients`, form);
         setClients([...clients, res.data]);
       }
       setForm({ name: '', firstVisit: '', nextVisit: '', amount: '', phone: '', location: '', status: 'started', _id: null });
@@ -76,7 +79,7 @@ const App = () => {
     if (window.confirm('Are you sure you want to delete this client?')) {
       setIsLoading(true);
       try {
-        await axios.delete(`http://localhost:5000/api/clients/${id}`);
+        await axios.delete(`${API_BASE_URL}/api/clients/${id}`);
         setClients(clients.filter(c => c._id !== id));
       } catch (err) {
         console.error('Failed to delete client:', err);
