@@ -10,6 +10,7 @@ const App = () => {
     amount: '',
     phone: '',
     location: '',
+    status: 'started', // Added status field
     _id: null
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -54,7 +55,7 @@ const App = () => {
         const res = await axios.post('http://localhost:5000/api/clients', form);
         setClients([...clients, res.data]);
       }
-      setForm({ name: '', firstVisit: '', nextVisit: '', amount: '', phone: '', location: '', _id: null });
+      setForm({ name: '', firstVisit: '', nextVisit: '', amount: '', phone: '', location: '', status: 'started', _id: null });
       setIsEditing(false);
       setShowForm(false);
     } catch (err) {
@@ -87,7 +88,7 @@ const App = () => {
   const resetForm = () => {
     setIsEditing(false);
     setShowForm(false);
-    setForm({ name: '', firstVisit: '', nextVisit: '', amount: '', phone: '', location: '', _id: null });
+    setForm({ name: '', firstVisit: '', nextVisit: '', amount: '', phone: '', location: '', status: 'started', _id: null });
   };
 
   // Filter and search clients
@@ -266,6 +267,27 @@ const App = () => {
                     </div>
                   </div>
                 ))}
+                {/* Status Dropdown */}
+                <div className="group animate-fade-in-up" style={{ animationDelay: `600ms` }}>
+                  <label className="flex items-center gap-2 text-white/90 font-semibold mb-3">
+                    <span className="text-xl">🔄</span>
+                    Status
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="status"
+                      value={form.status}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl text-white focus:bg-white/20 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/50 focus:outline-none transition-all duration-300 hover:bg-white/15"
+                    >
+                      <option value="started">Started</option>
+                      <option value="ongoing">Ongoing</option>
+                      <option value="closed">Closed</option>
+                    </select>
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-cyan-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                  </div>
+                </div>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 mt-10">
