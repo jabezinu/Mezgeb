@@ -17,11 +17,16 @@ app.use(cors());
 // Routes
 app.use('/api/clients', clientRoutes);
 
-// Database connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}).catch(error => console.error('Database connection error:', error));
+// Database connection (for Vercel serverless)
+let isConnected = false;
+
+async function connectDB() {
+    if (isConnected) return;
+    await mongoose.connect(process.env.MONGO_URI);
+    isConnected = true;
+}
+
+export default async function handler(req, res) {
+    await connectDB();
+    app(req, res);
+}
